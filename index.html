@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <form>
+    <p>
+      <label for="search">search</label>
+      <input type="text" name="search" id="search">
+    </p>
+    <button id="searchGiphy">Search Giphy</button>
+  </form>
+  <hr>
+  <div id="gifs"></div>
+  <script>
+
+    const generateApiUrl = keyword => {
+      const apiKey = 'j6yOF05YP8AGwMifwqeDBZ1RYjr4n0Tj'
+      return 'https://api.giphy.com/v1/gifs/search?q=' + keyword + '&rating=g&limit=10&api_key=' + apiKey
+    }
+
+    document.getElementById('searchGiphy').addEventListener('click', event => {
+      event.preventDefault()
+
+      const keyword = document.getElementById('search').value
+      const apiUrl = generateApiUrl(keyword)
+
+    fetch(apiUrl)
+      .then(res => res.json())
+      .then( giphyData => {
+        const gifs = giphyData.data
+        
+        document.getElementById('gifs').innerHTML = ''
+
+        for (let i = 0; i < gifs.length; i++) {
+          const gifTitle = gifs[i].title
+          const gifUrl = gifs[i].images.original.url
+
+          const gifElem = document.createElement('img')
+          gifElem.setAttribute('src', gifUrl)
+          gifElem.setAttribute('alt', gifTitle)
+
+          document.getElementById('gifs').append(gifElem)
+        }
+        
+        document.getElementById('search').value = ''
+      })
+      .catch(err => console.error(err))
+    })
+
+  </script>
+</body>
+</html>
